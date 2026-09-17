@@ -1,5 +1,10 @@
 import os
 
+from dotenv import load_dotenv
+
+
+load_dotenv()
+
 
 def get_openai_api_key() -> str:
     """
@@ -8,7 +13,6 @@ def get_openai_api_key() -> str:
     Raises:
         RuntimeError: If the API key is not configured.
     """
-
     api_key = os.getenv("OPENAI_API_KEY")
 
     if not api_key:
