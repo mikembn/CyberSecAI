@@ -1,4 +1,6 @@
+from app.ai_workflow import run_ai_analysis
 from app.analyzer import analyze_ports
+from app.openai_provider import OpenAIProvider
 from app.reporter import build_report, save_json_report
 from app.scanner import parse_nmap_output, run_nmap_scan
 
@@ -64,6 +66,24 @@ def main() -> None:
         print(f'Port: {finding["port"]}')
         print(f'Finding: {finding["finding"]}')
         print(f'Recommendation: {finding["recommendation"]}')
+
+    print("\nAI Security Analysis")
+    print("-" * 60)
+
+    provider = OpenAIProvider()
+
+    try:
+        ai_analysis = run_ai_analysis(
+            provider=provider,
+            target=target,
+            ports=ports,
+            findings=findings,
+        )
+
+        print(ai_analysis)
+
+    except Exception as exc:
+        print(f"AI analysis failed: {exc}")
 
     print("\nReport")
     print("-" * 60)
