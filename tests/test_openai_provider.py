@@ -33,6 +33,6 @@ def test_openai_provider_returns_response_text():
     assert result == "AI security analysis completed."
 
     mock_client.responses.create.assert_called_once_with(
-        model="gpt-5.6-mini",
+        model="gpt-5.6-luna",
         input="Analyze this security evidence.",
     )
