@@ -23,6 +23,14 @@ def test_analyze_ports_identifies_file_sharing():
     assert len(file_sharing_findings) == 1
     assert file_sharing_findings[0]["severity"] == "medium"
     assert file_sharing_findings[0]["type"] == "security"
+        
+    evidence = file_sharing_findings[0]["evidence"]
+
+    assert evidence["port"] == 445
+    assert evidence["protocol"] == "tcp"
+    assert evidence["state"] == "open"
+    assert evidence["service"] == "microsoft-ds"
+    assert evidence["version"] is None
 
 
 def test_analyze_ports_identifies_uncertain_service():
