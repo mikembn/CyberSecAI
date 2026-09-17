@@ -14,10 +14,15 @@ def test_analyze_ports_identifies_file_sharing():
 
     findings = analyze_ports(ports)
 
-    assert any(
-        finding["category"] == "File Sharing Service"
+    file_sharing_findings = [
+        finding
         for finding in findings
-    )
+        if finding["category"] == "File Sharing Service"
+    ]
+
+    assert len(file_sharing_findings) == 1
+    assert file_sharing_findings[0]["severity"] == "medium"
+    assert file_sharing_findings[0]["type"] == "security"
 
 
 def test_analyze_ports_identifies_uncertain_service():
@@ -33,10 +38,15 @@ def test_analyze_ports_identifies_uncertain_service():
 
     findings = analyze_ports(ports)
 
-    assert any(
-        finding["category"] == "Service Identification"
+    service_findings = [
+        finding
         for finding in findings
-    )
+        if finding["category"] == "Service Identification"
+    ]
+
+    assert len(service_findings) == 1
+    assert service_findings[0]["severity"] == "low"
+    assert service_findings[0]["type"] == "observation"
 
 
 def test_analyze_ports_identifies_administrative_service():
@@ -52,10 +62,39 @@ def test_analyze_ports_identifies_administrative_service():
 
     findings = analyze_ports(ports)
 
-    assert any(
-        finding["category"] == "Administrative Service"
+    administrative_findings = [
+        finding
         for finding in findings
-    )
+        if finding["category"] == "Administrative Service"
+    ]
+
+    assert len(administrative_findings) == 1
+    assert administrative_findings[0]["severity"] == "medium"
+    assert administrative_findings[0]["type"] == "security"
+
+
+def test_analyze_ports_missing_version_is_observation():
+    ports = [
+        {
+            "port": 80,
+            "protocol": "tcp",
+            "state": "open",
+            "service": "http",
+            "version": None,
+        }
+    ]
+
+    findings = analyze_ports(ports)
+
+    version_findings = [
+        finding
+        for finding in findings
+        if finding["category"] == "Version Information"
+    ]
+
+    assert len(version_findings) == 1
+    assert version_findings[0]["severity"] == "informational"
+    assert version_findings[0]["type"] == "observation"
 
 
 def test_analyze_ports_returns_empty_for_no_ports():

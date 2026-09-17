@@ -18,6 +18,7 @@ def create_finding(
     port_info: dict[str, Any],
     *,
     severity: str,
+    finding_type: str,
     category: str,
     finding: str,
     recommendation: str,
@@ -30,6 +31,7 @@ def create_finding(
         "service": port_info["service"],
         "version": port_info.get("version"),
         "severity": severity,
+        "type": finding_type,
         "category": category,
         "finding": finding,
         "recommendation": recommendation,
@@ -59,6 +61,7 @@ def analyze_ports(ports: list[dict[str, Any]]) -> list[dict[str, Any]]:
                 create_finding(
                     port_info,
                     severity="medium",
+                    finding_type="security",
                     category="Administrative Service",
                     finding=(
                         f"{service_name} is exposed on port {port}. "
@@ -81,6 +84,7 @@ def analyze_ports(ports: list[dict[str, Any]]) -> list[dict[str, Any]]:
                 create_finding(
                     port_info,
                     severity="medium",
+                    finding_type="security",
                     category="File Sharing Service",
                     finding=(
                         f"{service_name} is exposed on port {port}. "
@@ -101,6 +105,7 @@ def analyze_ports(ports: list[dict[str, Any]]) -> list[dict[str, Any]]:
                 create_finding(
                     port_info,
                     severity="low",
+                    finding_type="observation",
                     category="Service Identification",
                     finding=(
                         f"Nmap reported uncertain service identification "
@@ -119,6 +124,7 @@ def analyze_ports(ports: list[dict[str, Any]]) -> list[dict[str, Any]]:
                 create_finding(
                     port_info,
                     severity="informational",
+                    finding_type="observation",
                     category="Version Information",
                     finding=(
                         f"No service version information was identified "
