@@ -1,4 +1,5 @@
 from app.analyzer import analyze_ports
+from app.reporter import build_report, save_json_report
 from app.scanner import parse_nmap_output, run_nmap_scan
 
 
@@ -20,6 +21,14 @@ def main() -> None:
 
     ports = parse_nmap_output(scan_result["stdout"])
     findings = analyze_ports(ports)
+
+    report = build_report(
+        target=target,
+        ports=ports,
+        findings=findings,
+    )
+
+    report_file = save_json_report(report)
 
     print("=" * 60)
     print("CyberSecAI Security Scan")
@@ -55,6 +64,10 @@ def main() -> None:
         print(f'Port: {finding["port"]}')
         print(f'Finding: {finding["finding"]}')
         print(f'Recommendation: {finding["recommendation"]}')
+
+    print("\nReport")
+    print("-" * 60)
+    print(f"JSON report saved to: {report_file}")
 
 
 if __name__ == "__main__":
