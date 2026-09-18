@@ -5,6 +5,7 @@ from app.analyzer import analyze_ports
 from app.openai_provider import OpenAIProvider
 from app.reporter import build_report, save_json_report
 from app.scanner import parse_nmap_output, run_nmap_scan
+from app.summary import summarize_findings
 
 
 def parse_args() -> argparse.Namespace:
@@ -82,6 +83,15 @@ def main() -> None:
         print(f'Port: {finding["port"]}')
         print(f'Finding: {finding["finding"]}')
         print(f'Recommendation: {finding["recommendation"]}')
+    summary = summarize_findings(findings)
+
+    print("\nSecurity Summary")
+    print("-" * 60)
+
+    print(f'Total findings: {summary["total_findings"]}')
+
+    for severity, count in summary["severity_counts"].items():
+        print(f"{severity.capitalize():<15}: {count}")
 
     ai_analysis = None
 
