@@ -1,3 +1,5 @@
+import argparse
+
 from app.ai_workflow import run_ai_analysis
 from app.analyzer import analyze_ports
 from app.openai_provider import OpenAIProvider
@@ -5,8 +7,24 @@ from app.reporter import build_report, save_json_report
 from app.scanner import parse_nmap_output, run_nmap_scan
 
 
+def parse_args() -> argparse.Namespace:
+    """Parse CyberSecAI command-line arguments."""
+    parser = argparse.ArgumentParser(
+        description="CyberSecAI - AI-assisted cybersecurity assessment tool."
+    )
+
+    parser.add_argument(
+        "--target",
+        required=True,
+        help="Authorized target to scan.",
+    )
+
+    return parser.parse_args()
+
+
 def main() -> None:
-    target = input("Enter an authorized target to scan: ").strip()
+    args = parse_args()
+    target = args.target.strip()
 
     if not target:
         print("Error: Target cannot be empty.")
