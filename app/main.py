@@ -19,6 +19,12 @@ def parse_args() -> argparse.Namespace:
         help="Authorized target to scan.",
     )
 
+    parser.add_argument(
+        "--no-ai",
+        action="store_true",
+        help="Skip AI security analysis.",
+    )
+
     return parser.parse_args()
 
 
@@ -82,20 +88,23 @@ def main() -> None:
     print("\nAI Security Analysis")
     print("-" * 60)
 
-    try:
-        provider = OpenAIProvider()
+    if args.no_ai:
+        print("AI analysis skipped (--no-ai).")
+    else:
+        try:
+            provider = OpenAIProvider()
 
-        ai_analysis = run_ai_analysis(
-            provider=provider,
-            target=target,
-            ports=ports,
-            findings=findings,
-        )
+            ai_analysis = run_ai_analysis(
+                provider=provider,
+                target=target,
+                ports=ports,
+                findings=findings,
+            )
 
-        print(ai_analysis)
+            print(ai_analysis)
 
-    except Exception as exc:
-        print(f"AI analysis failed: {exc}")
+        except Exception as exc:
+            print(f"AI analysis failed: {exc}")
 
     report = build_report(
         target=target,
