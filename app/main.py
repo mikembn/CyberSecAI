@@ -24,14 +24,6 @@ def main() -> None:
     ports = parse_nmap_output(scan_result["stdout"])
     findings = analyze_ports(ports)
 
-    report = build_report(
-        target=target,
-        ports=ports,
-        findings=findings,
-    )
-
-    report_file = save_json_report(report)
-
     print("=" * 60)
     print("CyberSecAI Security Scan")
     print("=" * 60)
@@ -67,12 +59,14 @@ def main() -> None:
         print(f'Finding: {finding["finding"]}')
         print(f'Recommendation: {finding["recommendation"]}')
 
+    ai_analysis = None
+
     print("\nAI Security Analysis")
     print("-" * 60)
 
-    provider = OpenAIProvider()
-
     try:
+        provider = OpenAIProvider()
+
         ai_analysis = run_ai_analysis(
             provider=provider,
             target=target,
@@ -84,6 +78,15 @@ def main() -> None:
 
     except Exception as exc:
         print(f"AI analysis failed: {exc}")
+
+    report = build_report(
+        target=target,
+        ports=ports,
+        findings=findings,
+        ai_analysis=ai_analysis,
+    )
+
+    report_file = save_json_report(report)
 
     print("\nReport")
     print("-" * 60)
