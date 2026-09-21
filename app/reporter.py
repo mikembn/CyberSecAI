@@ -56,7 +56,7 @@ def build_report(
 
     report = {
         "tool": "CyberSecAI",
-        "report_version": "0.3",
+        "report_version": "0.6",
         "generated_at": datetime.now(timezone.utc).isoformat(),
         "target": target,
         "summary": {

@@ -4,6 +4,7 @@ from app.ai_workflow import run_ai_analysis
 from app.analyzer import analyze_ports
 from app.openai_provider import OpenAIProvider
 from app.reporter import build_report, save_json_report
+from app.markdown_reporter import save_markdown_report
 from app.scanner import parse_nmap_output, run_nmap_scan
 from app.summary import summarize_findings
 
@@ -124,10 +125,15 @@ def main() -> None:
     )
 
     report_file = save_json_report(report)
+    markdown_file = save_markdown_report(
+        report,
+        report_file,
+    )
 
-    print("\nReport")
+    print("\nReports")
     print("-" * 60)
     print(f"JSON report saved to: {report_file}")
+    print(f"Markdown report saved to: {markdown_file}")
 
 
 if __name__ == "__main__":

@@ -44,7 +44,7 @@ def test_build_report_contains_scan_data():
     report = build_report("127.0.0.1", ports, findings)
 
     assert report["tool"] == "CyberSecAI"
-    assert report["report_version"] == "0.3"
+    assert report["report_version"] == "0.6"
     assert report["target"] == "127.0.0.1"
 
     assert report["summary"]["open_ports"] == 1
@@ -79,7 +79,7 @@ def test_save_json_report_creates_valid_file(tmp_path):
 
     assert saved_report["tool"] == "CyberSecAI"
     assert saved_report["target"] == "127.0.0.1"
-    assert saved_report["report_version"] == "0.3"
+    assert saved_report["report_version"] == "0.6"
 
 
 def test_build_report_counts_multiple_severities():
