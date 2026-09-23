@@ -109,3 +109,69 @@ def test_analyze_ports_returns_empty_for_no_ports():
     findings = analyze_ports([])
 
     assert findings == []
+def test_analyze_ports_identifies_telnet_as_high_risk():
+    ports = [
+        {
+            "port": 23,
+            "protocol": "tcp",
+            "state": "open",
+            "service": "telnet",
+            "version": None,
+        }
+    ]
+
+    findings = analyze_ports(ports)
+
+    telnet_findings = [
+        finding
+        for finding in findings
+        if finding["category"] == "Legacy Administrative Service"
+    ]
+
+    assert len(telnet_findings) == 1
+    assert telnet_findings[0]["severity"] == "high"
+    assert telnet_findings[0]["type"] == "security"
+def test_analyze_ports_identifies_ssh_as_administrative_service():
+    ports = [
+        {
+            "port": 22,
+            "protocol": "tcp",
+            "state": "open",
+            "service": "ssh",
+            "version": "OpenSSH 9.6",
+        }
+    ]
+
+    findings = analyze_ports(ports)
+
+    administrative_findings = [
+        finding
+        for finding in findings
+        if finding["category"] == "Administrative Service"
+    ]
+
+    assert len(administrative_findings) == 1
+    assert administrative_findings[0]["severity"] == "medium"
+
+
+def test_analyze_ports_identifies_vnc_as_administrative_service():
+    ports = [
+        {
+            "port": 5900,
+            "protocol": "tcp",
+            "state": "open",
+            "service": "vnc",
+            "version": None,
+        }
+    ]
+
+    findings = analyze_ports(ports)
+
+    administrative_findings = [
+        finding
+        for finding in findings
+        if finding["category"] == "Administrative Service"
+    ]
+
+    assert len(administrative_findings) == 1
+    assert administrative_findings[0]["severity"] == "medium"
