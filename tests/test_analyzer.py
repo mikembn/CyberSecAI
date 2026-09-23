@@ -175,3 +175,25 @@ def test_analyze_ports_identifies_vnc_as_administrative_service():
 
     assert len(administrative_findings) == 1
     assert administrative_findings[0]["severity"] == "medium"
+def test_analyze_ports_findings_include_standardized_evidence():
+    ports = [
+        {
+            "port": 22,
+            "protocol": "tcp",
+            "state": "open",
+            "service": "ssh",
+            "version": "OpenSSH 9.6",
+        }
+    ]
+
+    findings = analyze_ports(ports)
+
+    assert findings
+
+    for finding in findings:
+        assert "evidence" in finding
+        assert finding["evidence"]["port"] == 22
+        assert finding["evidence"]["protocol"] == "tcp"
+        assert finding["evidence"]["state"] == "open"
+        assert finding["evidence"]["service"] == "ssh"
+        assert finding["evidence"]["version"] == "OpenSSH 9.6"
