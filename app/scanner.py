@@ -3,10 +3,29 @@ import subprocess
 from typing import Any
 
 
+def validate_target(target: str) -> str:
+    """
+    Validate and normalize a scan target.
+
+    Raises:
+        ValueError: If the target is empty or contains invalid whitespace.
+    """
+    normalized = target.strip()
+
+    if not normalized:
+        raise ValueError("Scan target cannot be empty.")
+
+    if any(character.isspace() for character in normalized):
+        raise ValueError("Scan target cannot contain whitespace.")
+
+    return normalized
+
+
 def run_nmap_scan(target: str) -> dict[str, Any]:
     """
     Run a basic Nmap service-detection scan against an authorized target.
     """
+    target = validate_target(target)
 
     command = [
         "nmap",

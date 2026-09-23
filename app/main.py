@@ -40,7 +40,11 @@ def main() -> None:
 
     print(f"\nScanning {target}...\n")
 
-    scan_result = run_nmap_scan(target)
+    try:
+    	scan_result = run_nmap_scan(target)
+    except ValueError as exc:
+    	print(f"Error: {exc}")
+    	return
 
     if not scan_result["success"]:
         print("Scan failed.")

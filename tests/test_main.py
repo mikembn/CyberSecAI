@@ -126,3 +126,32 @@ def test_main_handles_scan_failure(monkeypatch, capsys):
 
     assert "Scan failed." in output
     assert "Nmap test failure." in output
+
+def test_main_handles_invalid_target(monkeypatch, capsys):
+    monkeypatch.setattr(
+        "sys.argv",
+        [
+            "app.main",
+            "--target",
+            "invalid target",
+        ],
+    )
+
+    def fail_if_scan_called(*args, **kwargs):
+        pytest.fail(
+            "Nmap scan should not be called for an invalid target."
+        )
+
+    monkeypatch.setattr(
+        main,
+        "run_nmap_scan",
+        lambda target: (_ for _ in ()).throw(
+            ValueError("Scan target cannot contain whitespace.")
+        ),
+    )
+
+    main.main()
+
+    output = capsys.readouterr().out
+
+    assert "Error: Scan target cannot contain whitespace." in output

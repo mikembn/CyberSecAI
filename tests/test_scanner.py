@@ -1,7 +1,10 @@
 import subprocess
 
-from app.scanner import parse_nmap_output, run_nmap_scan
-
+from app.scanner import (
+    parse_nmap_output,
+    run_nmap_scan,
+    validate_target,
+)
 
 def test_parse_nmap_output_finds_open_ports():
     sample_output = """
@@ -102,3 +105,26 @@ def test_run_nmap_scan_handles_nmap_failure(monkeypatch):
     assert result["success"] is False
     assert result["return_code"] == 1
     assert result["stderr"] == "Nmap scan failed."
+def test_validate_target_strips_surrounding_whitespace():
+    assert validate_target("  127.0.0.1  ") == "127.0.0.1"
+
+
+def test_validate_target_rejects_empty_target():
+    import pytest
+
+    with pytest.raises(ValueError, match="cannot be empty"):
+        validate_target("")
+
+
+def test_validate_target_rejects_whitespace_only_target():
+    import pytest
+
+    with pytest.raises(ValueError, match="cannot be empty"):
+        validate_target("   ")
+
+
+def test_validate_target_rejects_internal_whitespace():
+    import pytest
+
+    with pytest.raises(ValueError, match="cannot contain whitespace"):
+        validate_target("192.168.1.1 test")
