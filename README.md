@@ -1,157 +1,68 @@
-\# CyberSecAI
+# CyberSecAI
 
+CyberSecAI is an AI-assisted cybersecurity analysis platform that combines Nmap network scanning, deterministic security analysis, structured reporting, and optional AI-assisted interpretation.
 
+The project is designed as a portfolio-quality software engineering project demonstrating modular architecture, defensive cybersecurity analysis, automated testing, and responsible AI integration.
 
-CyberSecAI is an AI-assisted cybersecurity automation platform designed to automate network security scanning, security finding analysis, reporting, and optional AI-powered interpretation.
+## Current Features
 
+- Nmap integration for authorized security assessments
+- Service and version detection
+- Scan-target validation
+- Nmap output parsing
+- Evidence-based security analysis
+- Structured security rules for common network services
+- Severity classification
+- Standardized security findings
+- JSON security reports
+- Markdown security reports
+- Optional AI-assisted security analysis
+- Mock AI provider for local testing
+- OpenAI provider abstraction
+- Automated test suite with pytest
 
-
-The project combines traditional security tooling such as Nmap with Python-based security analysis and optional AI capabilities to produce structured, human-readable security reports.
-
-
-
-\## Project Goals
-
-
-
-CyberSecAI is being developed as a portfolio-quality cybersecurity engineering project demonstrating:
-
-
-
-\- Python software engineering
-
-\- Network security scanning
-
-\- Nmap integration
-
-\- Service and version detection
-
-\- Rule-based security analysis
-
-\- Security finding classification
-
-\- Severity assessment
-
-\- Automated reporting
-
-\- Test-driven development
-
-\- Command-line application design
-
-\- AI-assisted security analysis
-
-\- Modular software architecture
-
-
-
-\## Features
-
-
-
-\### Network Scanning
-
-
-
-CyberSecAI integrates with Nmap to perform network reconnaissance and service detection.
-
-
-
-Current scanning uses:
-
-
+## Architecture
 
 ```text
-
-nmap -sV --version-light
-
-\## Architecture
-
-
-
-```text
-
-\&#x20;                   +----------------+
-
-\&#x20;                   |  Command Line  |
-
-\&#x20;                   |      CLI       |
-
-\&#x20;                   +-------+--------+
-
-\&#x20;                           |
-
-\&#x20;                           v
-
-\&#x20;                   +----------------+
-
-\&#x20;                   |     Scanner    |
-
-\&#x20;                   |     Nmap       |
-
-\&#x20;                   +-------+--------+
-
-\&#x20;                           |
-
-\&#x20;                           v
-
-\&#x20;                   +----------------+
-
-\&#x20;                   |     Parser     |
-
-\&#x20;                   | Nmap Output    |
-
-\&#x20;                   +-------+--------+
-
-\&#x20;                           |
-
-\&#x20;                           v
-
-\&#x20;                   +----------------+
-
-\&#x20;                   |    Analyzer    |
-
-\&#x20;                   | Security Rules |
-
-\&#x20;                   +-------+--------+
-
-\&#x20;                           |
-
-\&#x20;                           v
-
-\&#x20;                   +----------------+
-
-\&#x20;                   |    Summary     |
-
-\&#x20;                   |   Severity     |
-
-\&#x20;                   +-------+--------+
-
-\&#x20;                           |
-
-\&#x20;               +-----------+-----------+
-
-\&#x20;               |                       |
-
-\&#x20;               v                       v
-
-\&#x20;       +---------------+       +---------------+
-
-\&#x20;       |  AI Workflow  |       |    Reports    |
-
-\&#x20;       |   Optional    |       | JSON / MD     |
-
-\&#x20;       +---------------+       +---------------+
-
-\&#x20;               |
-
-\&#x20;               v
-
-\&#x20;       +---------------+
-
-\&#x20;       | OpenAI / Mock |
-
-\&#x20;       |    Provider   |
-
-\&#x20;       +---------------+
-
-
+                         CyberSecAI
+                              |
+                         Command Line
+                              |
+                              v
+                     +----------------+
+                     |    Scanner     |
+                     |     Nmap       |
+                     +-------+--------+
+                             |
+                             v
+                     +----------------+
+                     |     Parser     |
+                     |  Nmap Output   |
+                     +-------+--------+
+                             |
+                             v
+                     +----------------+
+                     |    Analyzer    |
+                     | Structured     |
+                     | Security Rules |
+                     +-------+--------+
+                             |
+                             v
+                     +----------------+
+                     |    Summary     |
+                     |   Findings     |
+                     +-------+--------+
+                             |
+                  +----------+----------+
+                  |                     |
+                  v                     v
+          +---------------+     +---------------+
+          | AI Workflow   |     |   Reporting   |
+          |   Optional    |     |   JSON / MD   |
+          +-------+-------+     +---------------+
+                  |
+                  v
+          +---------------+
+          | AI Providers  |
+          | OpenAI / Mock |
+          +---------------+
