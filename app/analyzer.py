@@ -29,23 +29,23 @@ def create_finding(
     """Create a standardized security finding."""
 
     return {
-    "port": port_info["port"],
-    "protocol": port_info["protocol"],
-    "service": port_info["service"],
-    "version": port_info.get("version"),
-    "severity": severity,
-    "type": finding_type,
-    "category": category,
-    "finding": finding,
-    "recommendation": recommendation,
-    "evidence": {
         "port": port_info["port"],
         "protocol": port_info["protocol"],
-        "state": port_info["state"],
         "service": port_info["service"],
         "version": port_info.get("version"),
-    },
-}
+        "severity": severity,
+        "type": finding_type,
+        "category": category,
+        "finding": finding,
+        "recommendation": recommendation,
+        "evidence": {
+            "port": port_info["port"],
+            "protocol": port_info["protocol"],
+            "state": port_info["state"],
+            "service": port_info["service"],
+            "version": port_info.get("version"),
+        },
+    }
 
 
 def analyze_ports(ports: list[dict[str, Any]]) -> list[dict[str, Any]]:
