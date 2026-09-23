@@ -1,21 +1,62 @@
+from dataclasses import dataclass
 from typing import Any
 
 
-ADMINISTRATIVE_PORTS = {
-    22: "SSH",
-    3389: "RDP",
-    5900: "VNC",
-}
+@dataclass(frozen=True)
+class PortRule:
+    """Define the security classification for a network port."""
 
-LEGACY_ADMINISTRATIVE_PORTS = {
-    23: "Telnet",
-}
+    port: int
+    service_name: str
+    severity: str
+    category: str
+    finding_type: str
 
-FILE_SHARING_PORTS = {
-    139: "NetBIOS/SMB",
-    445: "SMB",
-}
 
+PORT_RULES = {
+    22: PortRule(
+        port=22,
+        service_name="SSH",
+        severity="medium",
+        category="Administrative Service",
+        finding_type="security",
+    ),
+    3389: PortRule(
+        port=3389,
+        service_name="RDP",
+        severity="medium",
+        category="Administrative Service",
+        finding_type="security",
+    ),
+    5900: PortRule(
+        port=5900,
+        service_name="VNC",
+        severity="medium",
+        category="Administrative Service",
+        finding_type="security",
+    ),
+    23: PortRule(
+        port=23,
+        service_name="Telnet",
+        severity="high",
+        category="Legacy Administrative Service",
+        finding_type="security",
+    ),
+    139: PortRule(
+        port=139,
+        service_name="NetBIOS/SMB",
+        severity="medium",
+        category="File Sharing Service",
+        finding_type="security",
+    ),
+    445: PortRule(
+        port=445,
+        service_name="SMB",
+        severity="medium",
+        category="File Sharing Service",
+        finding_type="security",
+    ),
+}
 
 def create_finding(
     port_info: dict[str, Any],
@@ -63,75 +104,64 @@ def analyze_ports(ports: list[dict[str, Any]]) -> list[dict[str, Any]]:
         service = port_info["service"]
         version = port_info.get("version")
      
-        # Legacy administrative services
-        if port in LEGACY_ADMINISTRATIVE_PORTS:
-            service_name = LEGACY_ADMINISTRATIVE_PORTS[port]
+        rule = PORT_RULES.get(port)
 
-            findings.append(
-                create_finding(
-                    port_info,
-                    severity="high",
-                    finding_type="security",
-                    category="Legacy Administrative Service",
-                    finding=(
-                        f"{service_name} is exposed on port {port}. "
-                        "Telnet transmits administrative traffic without "
-                        "the protections provided by modern encrypted "
-                        "remote-administration protocols."
-                    ),
-                    recommendation=(
-                        "Disable Telnet when it is not required and use "
-                        "a secure administrative protocol such as SSH. "
-                        "Restrict administrative access to authorized "
-                        "systems."
-                    ),
+        if rule:
+            if rule.port == 23:
+                finding = (
+                    f"{rule.service_name} is exposed on port {port}. "
+                    "Telnet transmits administrative traffic without "
+                    "the protections provided by modern encrypted "
+                    "remote-administration protocols."
                 )
-            )
-
-       	
-        # Administrative services
-        if port in ADMINISTRATIVE_PORTS:
-            service_name = ADMINISTRATIVE_PORTS[port]
-
-            findings.append(
-                create_finding(
-                    port_info,
-                    severity="medium",
-                    finding_type="security",
-                    category="Administrative Service",
-                    finding=(
-                        f"{service_name} is exposed on port {port}. "
-                        "Remote administrative services should be "
-                        "restricted to authorized systems."
-                    ),
-                    recommendation=(
-                        "Verify that remote administration is required. "
-                        "Restrict access using firewall rules, network "
-                        "segmentation, and strong authentication."
-                    ),
+                recommendation = (
+                    "Disable Telnet when it is not required and use "
+                    "a secure administrative protocol such as SSH. "
+                    "Restrict administrative access to authorized "
+                    "systems."
                 )
-            )
 
-        # File-sharing services
-        elif port in FILE_SHARING_PORTS:
-            service_name = FILE_SHARING_PORTS[port]
+            elif rule.category == "Administrative Service":
+                finding = (
+                    f"{rule.service_name} is exposed on port {port}. "
+                    "Remote administrative services should be "
+                    "restricted to authorized systems."
+                )
+                recommendation = (
+                    "Verify that remote administration is required. "
+                    "Restrict access using firewall rules, network "
+                    "segmentation, and strong authentication."
+                )
+
+            elif rule.category == "File Sharing Service":
+                finding = (
+                    f"{rule.service_name} is exposed on port {port}. "
+                    "File-sharing services can provide network access "
+                    "to shared resources."
+                )
+                recommendation = (
+                    "Verify that file sharing is required and restrict "
+                    "access to trusted systems using firewall rules "
+                    "and network segmentation."
+                )
+
+            else:
+                finding = (
+                    f"{rule.service_name} is exposed on port {port}."
+                )
+                recommendation = (
+                    "Verify that the service is required and restrict "
+                    "access to authorized systems."
+                )
 
             findings.append(
                 create_finding(
                     port_info,
-                    severity="medium",
-                    finding_type="security",
-                    category="File Sharing Service",
-                    finding=(
-                        f"{service_name} is exposed on port {port}. "
-                        "File-sharing services can provide network access "
-                        "to shared resources."
-                    ),
-                    recommendation=(
-                        "Verify that file sharing is required and restrict "
-                        "access to trusted systems using firewall rules "
-                        "and network segmentation."
-                    ),
+                    severity=rule.severity,
+                    finding_type=rule.finding_type,
+                    category=rule.category,
+                    finding=finding,
+                    recommendation=recommendation,
                 )
             )
 
