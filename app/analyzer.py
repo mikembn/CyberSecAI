@@ -56,11 +56,68 @@ PORT_RULES = {
         category="File Sharing Service",
         finding_type="security",
     ),
+    80: PortRule(
+        port=80,
+        service_name="HTTP",
+        severity="low",
+        category="Web Service",
+        finding_type="security",
+    ),
+    443: PortRule(
+        port=443,
+        service_name="HTTPS",
+        severity="informational",
+        category="Web Service",
+        finding_type="observation",
+    ),
+    8080: PortRule(
+        port=8080,
+        service_name="HTTP Alternate",
+        severity="low",
+        category="Web Service",
+        finding_type="security",
+    ),
+    8443: PortRule(
+        port=8443,
+        service_name="HTTPS Alternate",
+        severity="informational",
+        category="Web Service",
+        finding_type="observation",
+    ),
+    1433: PortRule(
+        port=1433,
+        service_name="Microsoft SQL Server",
+        severity="medium",
+        category="Database Service",
+        finding_type="security",
+    ),
+    3306: PortRule(
+        port=3306,
+        service_name="MySQL",
+        severity="medium",
+        category="Database Service",
+        finding_type="security",
+    ),
+    5432: PortRule(
+        port=5432,
+        service_name="PostgreSQL",
+        severity="medium",
+        category="Database Service",
+        finding_type="security",
+    ),
+    6379: PortRule(
+        port=6379,
+        service_name="Redis",
+        severity="medium",
+        category="Database Service",
+        finding_type="security",
+    ),
 }
 
 def create_finding(
     port_info: dict[str, Any],
     *,
+    finding_id: str,
     severity: str,
     finding_type: str,
     category: str,
@@ -70,6 +127,7 @@ def create_finding(
     """Create a standardized security finding."""
 
     return {
+        "finding_id": finding_id,
         "port": port_info["port"],
         "protocol": port_info["protocol"],
         "service": port_info["service"],
@@ -103,7 +161,7 @@ def analyze_ports(ports: list[dict[str, Any]]) -> list[dict[str, Any]]:
         port = port_info["port"]
         service = port_info["service"]
         version = port_info.get("version")
-     
+
         rule = PORT_RULES.get(port)
 
         if rule:
@@ -157,11 +215,33 @@ def analyze_ports(ports: list[dict[str, Any]]) -> list[dict[str, Any]]:
             findings.append(
                 create_finding(
                     port_info,
+            finding_id=(
+                    "CYB-LEGACY-001"
+                        if rule.port == 23
+                        else (
+                    "CYB-ADMIN-001"
+                    if rule.category == "Administrative Service"
+                    else (
+                            "CYB-FILE-001"
+                            if rule.category == "File Sharing Service"
+                            else (
+                                "CYB-WEB-001"
+                                if rule.category == "Web Service"
+                                    else (
+                                        "CYB-DB-001"
+                                        if rule.category == "Database Service"
+                                    else "CYB-SVC-001"
+                                )
+                            )
+                           )
+                   )
+                    ),
                     severity=rule.severity,
                     finding_type=rule.finding_type,
                     category=rule.category,
                     finding=finding,
                     recommendation=recommendation,
+
                 )
             )
 
@@ -170,6 +250,7 @@ def analyze_ports(ports: list[dict[str, Any]]) -> list[dict[str, Any]]:
             findings.append(
                 create_finding(
                     port_info,
+              finding_id="CYB-SVC-001",
                     severity="low",
                     finding_type="observation",
                     category="Service Identification",
@@ -189,6 +270,7 @@ def analyze_ports(ports: list[dict[str, Any]]) -> list[dict[str, Any]]:
             findings.append(
                 create_finding(
                     port_info,
+            finding_id="CYB-VER-001",
                     severity="informational",
                     finding_type="observation",
                     category="Version Information",

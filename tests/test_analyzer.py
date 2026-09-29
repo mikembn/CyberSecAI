@@ -197,3 +197,119 @@ def test_analyze_ports_findings_include_standardized_evidence():
         assert finding["evidence"]["state"] == "open"
         assert finding["evidence"]["service"] == "ssh"
         assert finding["evidence"]["version"] == "OpenSSH 9.6"
+def test_analyze_ports_identifies_web_and_database_services():
+    ports = [
+        {
+            "port": 80,
+            "protocol": "tcp",
+            "state": "open",
+            "service": "http",
+            "version": "Example Web Server 2.4",
+        },
+        {
+            "port": 443,
+            "protocol": "tcp",
+            "state": "open",
+            "service": "https",
+            "version": "Example Web Server 2.4",
+        },
+        {
+            "port": 3306,
+            "protocol": "tcp",
+            "state": "open",
+            "service": "mysql",
+            "version": "MySQL 8.0",
+        },
+        {
+            "port": 5432,
+            "protocol": "tcp",
+            "state": "open",
+            "service": "postgresql",
+            "version": "PostgreSQL 16",
+        },
+    ]
+
+    findings = analyze_ports(ports)
+
+    assert len(findings) == 4
+
+    web_findings = [
+        finding
+        for finding in findings
+        if finding["category"] == "Web Service"
+    ]
+
+    database_findings = [
+        finding
+        for finding in findings
+        if finding["category"] == "Database Service"
+    ]
+
+    assert len(web_findings) == 2
+    assert len(database_findings) == 2
+
+    assert web_findings[0]["severity"] == "low"
+    assert web_findings[1]["severity"] == "informational"
+
+    for finding in database_findings:
+        assert finding["severity"] == "medium"
+        assert finding["type"] == "security"
+
+
+def test_analyze_ports_identifies_alternate_web_services():
+    ports = [
+        {
+            "port": 8080,
+            "protocol": "tcp",
+            "state": "open",
+            "service": "http-proxy",
+            "version": "Example Web Server 2.4",
+        },
+        {
+            "port": 8443,
+            "protocol": "tcp",
+            "state": "open",
+            "service": "https-alt",
+            "version": "Example Web Server 2.4",
+        },
+    ]
+
+    findings = analyze_ports(ports)
+
+    web_findings = [
+        finding
+        for finding in findings
+        if finding["category"] == "Web Service"
+    ]
+
+    assert len(web_findings) == 2
+    assert web_findings[0]["severity"] == "low"
+    assert web_findings[1]["severity"] == "informational"
+def test_analyze_ports_assigns_finding_ids():
+    ports = [
+        {
+            "port": 22,
+            "protocol": "tcp",
+            "state": "open",
+            "service": "ssh",
+            "version": "OpenSSH 9.6",
+        },
+        {
+            "port": 445,
+            "protocol": "tcp",
+            "state": "open",
+            "service": "microsoft-ds",
+            "version": None,
+        },
+    ]
+
+    findings = analyze_ports(ports)
+
+    finding_ids = {finding["finding_id"] for finding in findings}
+
+    assert "CYB-ADMIN-001" in finding_ids
+    assert "CYB-FILE-001" in finding_ids
+    assert "CYB-VER-001" in finding_ids
+
+    for finding in findings:
+        assert finding["finding_id"].startswith("CYB-")

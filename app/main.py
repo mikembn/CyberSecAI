@@ -83,7 +83,8 @@ def main() -> None:
     for finding in findings:
         print(
             f'\n[{finding["severity"].upper()}] '
-            f'{finding["category"]}'
+            f'{finding["finding_id"]} '
+            f'- {finding["category"]}'
         )
         print(f'Port: {finding["port"]}')
         print(f'Finding: {finding["finding"]}')
