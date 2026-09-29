@@ -21,6 +21,13 @@ The project is designed as a portfolio-quality software engineering project demo
 - OpenAI provider abstraction
 - Automated test suite with pytest
 
+## Example Report
+
+A sanitized fictional security report is included to demonstrate CyberSecAI's Markdown reporting output:
+
+[View Example Security Report](docs/examples/example-security-report.md)
+
+> **Note:** The example report contains fictional data and is included solely for portfolio demonstration purposes.
 ## Architecture
 
 ```text
