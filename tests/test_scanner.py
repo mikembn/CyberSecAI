@@ -127,4 +127,4 @@ def test_validate_target_rejects_internal_whitespace():
     import pytest
 
     with pytest.raises(ValueError, match="cannot contain whitespace"):
-        validate_target("192.168.1.1 test")
+        validate_target("192.0.2.1 test")

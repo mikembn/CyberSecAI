@@ -24,45 +24,45 @@ The project is designed as a portfolio-quality software engineering project demo
 ## Architecture
 
 ```text
-                         CyberSecAI
-                              |
-                         Command Line
-                              |
-                              v
-                     +----------------+
-                     |    Scanner     |
-                     |     Nmap       |
-                     +-------+--------+
-                             |
-                             v
-                     +----------------+
-                     |     Parser     |
-                     |  Nmap Output   |
-                     +-------+--------+
-                             |
-                             v
-                     +----------------+
-                     |    Analyzer    |
-                     | Structured     |
-                     | Security Rules |
-                     +-------+--------+
-                             |
-                             v
-                     +----------------+
-                     |    Summary     |
-                     |   Findings     |
-                     +-------+--------+
-                             |
-                  +----------+----------+
-                  |                     |
-                  v                     v
-          +---------------+     +---------------+
-          | AI Workflow   |     |   Reporting   |
-          |   Optional    |     |   JSON / MD   |
-          +-------+-------+     +---------------+
-                  |
-                  v
-          +---------------+
-          | AI Providers  |
-          | OpenAI / Mock |
-          +---------------+
+                           CyberSecAI
+                                |
+                           Command Line
+                                |
+                                v
+                       +----------------+
+                       |    Scanner     |
+                       |     Nmap       |
+                       +-------+--------+
+                               |
+                               v
+                       +----------------+
+                       |     Parser     |
+                       |  Nmap Output   |
+                       +-------+--------+
+                               |
+                               v
+                       +----------------+
+                       |    Analyzer    |
+                       | Structured     |
+                       | Security Rules |
+                       +-------+--------+
+                               |
+                               v
+                       +----------------+
+                       |    Summary     |
+                       |   Findings     |
+                       +-------+--------+
+                               |
+                    +----------+----------+
+                    |                     |
+                    v                     v
+            +---------------+     +---------------+
+            | AI Workflow   |     |   Reporting   |
+            |   Optional    |     |   JSON / MD   |
+            +-------+-------+     +---------------+
+                    |
+                    v
+            +---------------+
+            | AI Providers  |
+            | OpenAI / Mock |
+            +---------------+
