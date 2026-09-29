@@ -6,10 +6,10 @@ from app.config import get_openai_api_key
 def test_get_openai_api_key_returns_environment_value(monkeypatch):
     monkeypatch.setenv(
         "OPENAI_API_KEY",
-        "test-key-123",
+        "dummy-test-key",
     )
 
-    assert get_openai_api_key() == "test-key-123"
+    assert get_openai_api_key() == "dummy-test-key"
 
 
 def test_get_openai_api_key_raises_when_missing(monkeypatch):
